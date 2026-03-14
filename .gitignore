@@ -4,9 +4,6 @@
 # Local model weights and caches
 models/
 
-# Generated vector store
-vector_store/
-
 # Local documents
 pdfs/
 

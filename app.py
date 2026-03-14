@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -5,8 +6,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 @st.cache_resource(show_spinner=False)
 def load_embeddings():
-    # Points exactly to your local offline model
-    model_path = r"D:\ai_agent_policy\models\all-MiniLM-L6-v2"
+    # Use public HuggingFace hub path for cloud deployment
+    model_path = "sentence-transformers/all-MiniLM-L6-v2"
     return HuggingFaceEmbeddings(model_name=model_path)
 
 @st.cache_resource(show_spinner=True)
@@ -18,10 +19,14 @@ def main():
     st.set_page_config(page_title="GovTech Policy & Exam Navigator", layout="wide")
     st.title("GovTech Policy & Exam Navigator")
 
+    # Fixed API key (can be overridden via GEMINI_API_KEY env on Streamlit Cloud)
+    api_key = os.getenv(
+        "GEMINI_API_KEY",
+        "AIzaSyARrhfoG3ud26bBXzKEIq-DAJ5C_KJSFt8",
+    )
     with st.sidebar:
-        st.subheader("API Key")
-        api_key = st.text_input("Google Gemini API Key", type="password")
-        st.markdown("Knowledge base running completely offline.")
+        st.subheader("Deployment Info")
+        st.markdown("Knowledge base running completely offline for retrieval.")
 
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": "Ask me about policies or exam details."}]
@@ -32,10 +37,6 @@ def main():
 
     user_input = st.chat_input("Ask a policy or exam question")
     if user_input:
-        if not api_key:
-            st.warning("Please enter your Google Gemini API key in the sidebar.")
-            return
-
         st.session_state.messages.append({"role": "user", "content": user_input})
         with st.chat_message("user"):
             st.markdown(user_input)
