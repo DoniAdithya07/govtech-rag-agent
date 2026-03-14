@@ -1,0 +1,19 @@
+# Python virtual environment
+.venv/
+
+# Local model weights and caches
+models/
+
+# Generated vector store
+vector_store/
+
+# Local documents
+pdfs/
+
+# Python cache
+__pycache__/
+
+# Streamlit artifacts
+.streamlit/
+.stcache/
+.streamlit_cache/
